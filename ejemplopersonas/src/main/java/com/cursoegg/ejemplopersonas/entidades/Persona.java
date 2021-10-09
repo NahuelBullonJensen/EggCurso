@@ -3,16 +3,21 @@ package com.cursoegg.ejemplopersonas.entidades;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Persona {
 
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
   private String id;
+  
+  private String dni;
 
   private String nombre;
   private String apellido;
@@ -60,5 +65,13 @@ public class Persona {
 
   public void setCiudad(Ciudad ciudad) {
     this.ciudad = ciudad;
+  }
+
+  public String getDni() {
+    return dni;
+  }
+
+  public void setDni(String dni) {
+    this.dni = dni;
   }
 }

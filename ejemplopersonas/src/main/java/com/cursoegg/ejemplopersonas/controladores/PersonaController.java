@@ -10,6 +10,7 @@ import com.cursoegg.ejemplopersonas.servicios.CiudadService;
 import com.cursoegg.ejemplopersonas.servicios.PersonaServicio;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ public class PersonaController {
   @Autowired
   private CiudadService ciudadService;
 
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
   @GetMapping("/list")
   public String listarPersonas(Model model, @RequestParam(required = false) String q) {
     if (q != null) {
@@ -66,7 +68,10 @@ public class PersonaController {
       personaServicio.save(persona);
       redirectAttributes.addFlashAttribute("success", "Persona guardada con éxito");
     } catch (Exception e) {
-      redirectAttributes.addFlashAttribute("error", e.getMessage());
+      model.addAttribute("error", e.getMessage());
+      model.addAttribute("persona", persona);
+      model.addAttribute("ciudades", ciudadService.listAll());
+      return "persona-form";
     }
     return "redirect:/persona/list";
   }
